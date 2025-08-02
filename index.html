@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>পেশাদার ইমেজ রিসাইজার টুল</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0ea5e9;
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --success: #10b981;
+            --border: #cbd5e1;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Nirmala UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--dark);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin: 20px auto;
+        }
+        
+        header {
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            margin: 25px 0 15px;
+            gap: 30px;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 200px;
+            text-align: center;
+        }
+        
+        .step-number {
+            background: white;
+            color: var(--primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .step-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 30px;
+        }
+        
+        .upload-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            border-right: 1px solid var(--border);
+        }
+        
+        .preview-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+        
+        .section-title {
+            color: var(--primary-dark);
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            background: #dbeafe;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .upload-area {
+            border: 3px dashed var(--primary);
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8fafc;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-area:hover, .upload-area.drag-over {
+            background: #e0f2fe;
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+        }
+        
+        .upload-icon {
+            font-size: 60px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+        
+        .upload-text {
+            font-size: 1.2rem;
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .upload-subtext {
+            font-size: 0.95rem;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        
+        .browse-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        
+        .browse-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.03);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .controls {
+            background: #f1f5ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .control-group {
+            margin-bottom: 25px;
+        }
+        
+        .control-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+        
+        .info-icon {
+            color: var(--gray);
+            cursor: help;
+            font-size: 1.1rem;
+        }
+        
+        .dimension-inputs {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .dimension-box {
+            flex: 1;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        input[type="number"]:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        
+        .ratio-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .ratio-container input {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .resize-btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+        }
+        
+        .resize-btn:hover {
+            background: linear-gradient(to right, var(--primary-dark), #1e40af);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(37, 99, 235, 0.4);
+        }
+        
+        .download-btn {
+            background: linear-gradient(to right, var(--success), #059669);
+            color: white;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+        }
+        
+        .download-btn:hover {
+            background: linear-gradient(to right, #059669, #047857);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(16, 185, 129, 0.4);
+        }
+        
+        .download-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .image-container {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f8fafc;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            max-height: 400px;
+            display: none;
+            object-fit: contain;
+        }
+        
+        .placeholder {
+            color: var(--gray);
+            font-size: 1.1rem;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .image-info {
+            background: #f1f5ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .info-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--dark);
+            word-break: break-all;
+        }
+        
+        .dimension-preview {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #f1f5ff;
+            color: var(--gray);
+            font-size: 0.95rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .upload-section {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .steps-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .dimension-inputs {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-image"></i>
+            </div>
+            <h1>পেশাদার ইমেজ রিসাইজার টুল</h1>
+            <p>যেকোনো ছবি সহজেই রিসাইজ করুন এবং ডাউনলোড করুন - মাত্র তিনটি সহজ ধাপে</p>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">ছবি আপলোড করুন (JPG, PNG, GIF)</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">আকার সেট করুন এবং রিসাইজ করুন</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">রিসাইজ করা ছবি ডাউনলোড করুন</div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="app-container">
+            <div class="upload-section">
+                <h2 class="section-title">
+                    <i class="fas fa-upload"></i>
+                    ছবি আপলোড করুন
+                </h2>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <p class="upload-text">ছবি এখানে ড্র্যাগ অ্যান্ড ড্রপ করুন</p>
+                    <p class="upload-subtext">JPG, PNG বা GIF ফরম্যাটের ছবি (সর্বোচ্চ 100MB)</p>
+                    <button class="browse-btn">
+                        <i class="fas fa-folder-open"></i>
+                        ফাইল নির্বাচন করুন
+                    </button>
+                    <input type="file" id="fileInput" class="file-input" accept="image/*">
+                </div>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <div class="control-header">
+                            <label for="width">ছবির আকার সেট করুন</label>
+                            <span class="tooltip info-icon">
+                                <i class="fas fa-info-circle"></i>
+                                <span class="tooltip-text">ছবির প্রস্থ এবং উচ্চতা পিক্সেলে নির্ধারণ করুন। অনুপাত সংরক্ষণ করলে স্বয়ংক্রিয়ভাবে আপডেট হবে।</span>
+                            </span>
+                        </div>
+                        
+                        <div class="dimension-inputs">
+                            <div class="dimension-box">
+                                <label for="width">প্রস্থ (px)</label>
+                                <input type="number" id="width" min="1" placeholder="প্রস্থ">
+                            </div>
+                            <div class="dimension-box">
+                                <label for="height">উচ্চতা (px)</label>
+                                <input type="number" id="height" min="1" placeholder="উচ্চতা">
+                            </div>
+                        </div>
+                        
+                        <div class="dimension-preview">
+                            <span>আসল আকার: <span id="originalDimensions">0 × 0</span></span>
+                            <span>নতুন আকার: <span id="newDimensions">0 × 0</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="ratio-container">
+                        <input type="checkbox" id="maintainRatio" checked>
+                        <label for="maintainRatio">অনুপাত সংরক্ষণ করুন (স্বয়ংক্রিয়)</label>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn resize-btn" id="resizeBtn">
+                            <i class="fas fa-crop-alt"></i>
+                            ছবি রিসাইজ করুন
+                        </button>
+                        <button class="btn download-btn" id="downloadBtn" disabled>
+                            <i class="fas fa-download"></i>
+                            ডাউনলোড করুন
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="preview-section">
+                <h2 class="section-title">
+                    <i class="fas fa-eye"></i>
+                    ছবি প্রিভিউ
+                </h2>
+                
+                <div class="image-container">
+                    <img id="originalImage" alt="আপলোড করা ছবি">
+                    <img id="resizedImage" alt="রিসাইজ করা ছবি">
+                    <p class="placeholder" id="placeholder">
+                        <i class="fas fa-image" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.3;"></i><br>
+                        ছবি আপলোড করার পর এখানে প্রিভিউ প্রদর্শিত হবে
+                    </p>
+                </div>
+                
+                <div class="image-info">
+                    <h3 style="margin-bottom: 15px; color: var(--primary-dark);">ছবির তথ্য</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">ফাইলের নাম</div>
+                            <div class="info-value" id="fileName">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">ফরম্যাট</div>
+                            <div class="info-value" id="fileFormat">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">আসল আকার</div>
+                            <div class="info-value" id="originalSize">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">নতুন আকার</div>
+                            <div class="info-value" id="newSize">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>পেশাদার ইমেজ রিসাইজার টুল - যেকোনো ছবি সহজেই রিসাইজ করুন | &copy; ২০২৩</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const originalImage = document.getElementById('originalImage');
+            const resizedImage = document.getElementById('resizedImage');
+            const placeholder = document.getElementById('placeholder');
+            const widthInput = document.getElementById('width');
+            const heightInput = document.getElementById('height');
+            const maintainRatio = document.getElementById('maintainRatio');
+            const resizeBtn = document.getElementById('resizeBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const fileName = document.getElementById('fileName');
+            const originalSize = document.getElementById('originalSize');
+            const newSize = document.getElementById('newSize');
+            const fileFormat = document.getElementById('fileFormat');
+            const originalDimensions = document.getElementById('originalDimensions');
+            const newDimensions = document.getElementById('newDimensions');
+            
+            let originalWidth = 0;
+            let originalHeight = 0;
+            let currentFile = null;
+            
+            // Event listeners
+            uploadArea.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleDrop);
+            
+            widthInput.addEventListener('input', handleDimensionChange);
+            heightInput.addEventListener('input', handleDimensionChange);
+            
+            resizeBtn.addEventListener('click', resizeImage);
+            downloadBtn.addEventListener('click', downloadImage);
+            
+            // Handle file selection
+            function handleFileSelect(e) {
+                const file = e.target.files[0];
+                processFile(file);
+            }
+            
+            // Handle drag over
+            function handleDragOver(e) {
+                e.preventDefault();
+                uploadArea.classList.add('drag-over');
+            }
+            
+            // Handle drag leave
+            function handleDragLeave() {
+                uploadArea.classList.remove('drag-over');
+            }
+            
+            // Handle drop
+            function handleDrop(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+                
+                const file = e.dataTransfer.files[0];
+                processFile(file);
+            }
+            
+            // Process the selected file
+            function processFile(file) {
+                if (!file || !file.type.match('image.*')) {
+                    alert('দয়া করে একটি বৈধ ছবি ফাইল নির্বাচন করুন (JPEG, PNG, GIF)।');
+                    return;
+                }
+                
+                if (file.size > 100 * 1024 * 1024) {
+                    alert('ছবির আকার 5MB এর বেশি হতে পারবে না। দয়া করে একটি ছোট ছবি নির্বাচন করুন।');
+                    return;
+                }
+                
+                currentFile = file;
+                fileName.textContent = file.name;
+                fileFormat.textContent = file.type.split('/')[1].toUpperCase();
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    originalImage.src = e.target.result;
+                    originalImage.onload = function() {
+                        placeholder.style.display = 'none';
+                        originalImage.style.display = 'block';
+                        resizedImage.style.display = 'none';
+                        
+                        // Get original dimensions
+                        originalWidth = originalImage.naturalWidth;
+                        originalHeight = originalImage.naturalHeight;
+                        
+                        // Set initial dimensions
+                        widthInput.value = originalWidth;
+                        heightInput.value = originalHeight;
+                        
+                        // Update dimension previews
+                        originalDimensions.textContent = `${originalWidth} × ${originalHeight}`;
+                        newDimensions.textContent = `${originalWidth} × ${originalHeight}`;
+                        
+                        // Update size info
+                        originalSize.textContent = formatFileSize(file.size);
+                        newSize.textContent = '-';
+                        
+                        // Enable resize button
+                        resizeBtn.disabled = false;
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            // Handle dimension change
+            function handleDimensionChange(e) {
+                if (!maintainRatio.checked || !originalWidth || !originalHeight) {
+                    updateDimensionPreview();
+                    return;
+                }
+                
+                const aspectRatio = originalWidth / originalHeight;
+                
+                if (e.target.id === 'width') {
+                    const newWidth = parseInt(widthInput.value);
+                    if (!isNaN(newWidth)) {
+                        heightInput.value = Math.round(newWidth / aspectRatio);
+                    }
+                } else if (e.target.id === 'height') {
+                    const newHeight = parseInt(heightInput.value);
+                    if (!isNaN(newHeight)) {
+                        widthInput.value = Math.round(newHeight * aspectRatio);
+                    }
+                }
+                
+                updateDimensionPreview();
+            }
+            
+            // Update dimension preview
+            function updateDimensionPreview() {
+                const newWidth = parseInt(widthInput.value) || 0;
+                const newHeight = parseInt(heightInput.value) || 0;
+                newDimensions.textContent = `${newWidth} × ${newHeight}`;
+            }
+            
+            // Resize the image
+            function resizeImage() {
+                if (!originalImage.src) {
+                    alert('দয়া করে প্রথমে একটি ছবি আপলোড করুন।');
+                    return;
+                }
+                
+                const newWidth = parseInt(widthInput.value);
+                const newHeight = parseInt(heightInput.value);
+                
+                if (isNaN(newWidth) || isNaN(newHeight) || newWidth <= 0 || newHeight <= 0) {
+                    alert('দয়া করে বৈধ প্রস্থ এবং উচ্চতা প্রদান করুন।');
+                    return;
+                }
+                
+                // Create a canvas for resizing
+                const canvas = document.createElement('canvas');
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(originalImage, 0, 0, newWidth, newHeight);
+                
+                // Show resized image
+                resizedImage.src = canvas.toDataURL('image/jpeg', 0.9);
+                resizedImage.style.display = 'block';
+                originalImage.style.display = 'none';
+                placeholder.style.display = 'none';
+                
+                // Update size info
+                const dataURL = resizedImage.src;
+                const sizeInBytes = Math.round((dataURL.length * 3) / 4);
+                newSize.textContent = formatFileSize(sizeInBytes);
+                
+                // Enable download button
+                downloadBtn.disabled = false;
+            }
+            
+            // Download the resized image
+            function downloadImage() {
+                if (!resizedImage.src) return;
+                
+                const link = document.createElement('a');
+                link.download = 'resized_' + currentFile.name;
+                link.href = resizedImage.src;
+                link.click();
+            }
+            
+            // Format file size
+            function formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' বাইট';
+                else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                else return (bytes / 1048576).toFixed(1) + ' MB';
+            }
+        });
+    </script>
+</body>
+</html>
